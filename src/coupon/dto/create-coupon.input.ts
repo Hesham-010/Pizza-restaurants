@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { DiscountEnum } from 'src/enums/discount.enums';
+import { Max } from 'class-validator';
 
 @InputType()
 export class CreateCouponInput {
@@ -7,5 +7,6 @@ export class CreateCouponInput {
   expireDate: Date;
 
   @Field()
+  @Max(50)
   discount: number;
 }

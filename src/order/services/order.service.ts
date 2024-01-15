@@ -37,8 +37,7 @@ export class OrderService {
         deliver: { id: createOrderInput.deliveryId },
       })
       .returning('*')
-      .execute()
-      .then((order) => order.raw[0] as Order);
+      .execute();
 
     // add order pizzas
     await this.orderPizzas(order, createOrderInput);
