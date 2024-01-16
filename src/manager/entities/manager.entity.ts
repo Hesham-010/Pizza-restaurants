@@ -6,7 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Person } from './person.entity';
+import { Person } from '../../models/person.entity';
 
 @ObjectType()
 @Entity()
@@ -23,7 +23,8 @@ export class Manager {
   @Column()
   password: string;
 
-  @OneToOne(() => Person)
+  @Field()
+  @OneToOne(() => Person, { onDelete: 'CASCADE' })
   @JoinColumn()
   person: Person;
 }

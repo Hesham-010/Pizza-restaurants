@@ -1,6 +1,6 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Pizza_Additions } from '../../models/pizza_additions.entity';
+import { Pizza_Additions } from '../../pizza/entities/pizza_additions.entity';
 import { Order_Additions } from '../../order/entities/order_additions.entity';
 
 @ObjectType()

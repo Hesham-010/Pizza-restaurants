@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customer } from './customer/entities/customer.entity';
 import { Person } from './models/person.entity';
-import { Manager } from './models/manager.entity';
+import { Manager } from './manager/entities/manager.entity';
 import { Staff } from './staff/entities/staff.entity';
 import { Store } from './stor/entities/stor.entity';
 import { Address } from './customer/entities/address.entity';
 import { Pizza } from './pizza/entities/pizza.entity';
 import { Order_Items } from './order/entities/order_items.entity';
 import { Coupon } from './coupon/entities/coupon.entity';
-import { Pizza_Additions } from './models/pizza_additions.entity';
+import { Pizza_Additions } from './pizza/entities/pizza_additions.entity';
 import { Addition } from './addition/entities/addition.entity';
 import { Store_Goals } from './stor/entities/stor_goals.entity';
 import { Menu_items } from './models/menu_items.entity';
@@ -27,6 +27,7 @@ import { Order_Additions } from './order/entities/order_additions.entity';
 import { AdditionModule } from './addition/addition.module';
 import { InstructionModule } from './instruction/instruction.module';
 import { ConfigModule } from '@nestjs/config';
+import { ManagerModule } from './manager/manager.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { ConfigModule } from '@nestjs/config';
     CouponModule,
     AdditionModule,
     InstructionModule,
+    ManagerModule,
   ],
   controllers: [],
   providers: [],

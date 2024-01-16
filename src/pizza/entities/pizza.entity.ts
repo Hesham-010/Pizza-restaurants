@@ -1,7 +1,7 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order_Items } from '../../order/entities/order_items.entity';
-import { Pizza_Additions } from '../../models/pizza_additions.entity';
+import { Pizza_Additions } from './pizza_additions.entity';
 import { Menu_items } from '../../models/menu_items.entity';
 import { PizzaSize } from 'src/enums/pizza.enums';
 

@@ -13,6 +13,6 @@ export class Instruction {
   @Column()
   instruction: string;
 
-  @ManyToOne(() => Order, (order) => order.instruction)
+  @ManyToOne(() => Order, (order) => order.instruction, { onDelete: 'CASCADE' })
   order: Order;
 }

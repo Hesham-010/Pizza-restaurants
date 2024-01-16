@@ -15,9 +15,7 @@ export class PizzaService {
       .insert()
       .into(Pizza)
       .values({ ...createPizzaInput })
-      .returning('*')
-      .execute()
-      .then((pizza) => pizza.raw[0]);
+      .execute();
 
     return pizza;
   }
@@ -45,11 +43,11 @@ export class PizzaService {
     return pizza;
   }
 
-  update(id: number, updatePizzaInput: UpdatePizzaInput) {
+  async update(id: number, updatePizzaInput: UpdatePizzaInput) {
     return `This action updates a #${id} pizza`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} pizza`;
   }
 }

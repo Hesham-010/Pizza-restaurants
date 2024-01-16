@@ -81,7 +81,9 @@ export class Order {
   @Field()
   store: Store;
 
-  @OneToMany(() => Instruction, (instraction) => instraction.order)
+  @OneToMany(() => Instruction, (instraction) => instraction.order, {
+    cascade: true,
+  })
   instruction: Instruction[];
 
   @OneToMany(() => Order_Items, (order_items) => order_items.order, {
