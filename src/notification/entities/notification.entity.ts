@@ -6,13 +6,14 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { NotificationToken } from './notification_token.entity';
+import { NotificationStatus } from 'src/utils/enums/notification_status.enum';
 
 @Entity()
 export class Notification {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @JoinColumn({ name: 'notification_token_id', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'notificationToken_id', referencedColumnName: 'id' })
   @ManyToOne(() => NotificationToken)
   notification_token: NotificationToken;
 
@@ -23,7 +24,9 @@ export class Notification {
   body: any;
 
   @Column({
-    default: 'ACTIVE',
+    type: 'enum',
+    enum: NotificationStatus,
+    default: NotificationStatus.ACTIVE,
   })
-  status: string;
+  status: NotificationStatus;
 }
