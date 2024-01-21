@@ -8,24 +8,11 @@ import * as path from 'path';
 import { NotificationInput } from '../dtos/notification.input';
 import { NotificationStatus } from 'src/utils/enums/notification_status.enum';
 
-const serviceAccountPath = path.join(
-  __dirname,
-  '..',
-  'notification',
-  'firebase-admin-sdk.json',
-);
-
-try {
-  const serviceAccount = require(serviceAccountPath);
-
-  firebase.initializeApp({
-    credential: firebase.credential.cert(serviceAccount),
-  });
-
-  console.log('Firebase initialized successfully');
-} catch (error) {
-  console.error(`Error initializing Firebase: ${error.message}`);
-}
+firebase.initializeApp({
+  credential: firebase.credential.cert(
+    path.join(__dirname, '..', '..', '..', 'firebase-admin-sdk.json'),
+  ),
+});
 
 @Injectable()
 export class NotificationService {
