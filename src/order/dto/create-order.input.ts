@@ -1,6 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsNumber, IsString, IsUUID } from 'class-validator';
-import { OrderStatus, ReceiveMethod } from 'src/enums/order.enums';
+import { OrderStatus, ReceiveMethod } from 'src/utils/enums/order.enums';
 
 @InputType()
 export class CreateOrderInput {

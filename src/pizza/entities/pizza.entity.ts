@@ -3,7 +3,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order_Items } from '../../order/entities/order_items.entity';
 import { Pizza_Additions } from './pizza_additions.entity';
 import { Menu_items } from '../../models/menu_items.entity';
-import { PizzaSize } from 'src/enums/pizza.enums';
+import { PizzaSize } from 'src/utils/enums/pizza.enums';
 
 @ObjectType()
 @Entity()

@@ -11,7 +11,7 @@ import {
 import { Person } from '../../models/person.entity';
 import { Store } from '../../stor/entities/stor.entity';
 import { Order } from 'src/order/entities/order.entity';
-import { StaffPosition } from 'src/enums/staff.enums';
+import { StaffPosition } from 'src/utils/enums/staff.enums';
 
 @ObjectType()
 @Entity()

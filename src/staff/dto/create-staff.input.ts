@@ -1,6 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsMobilePhone, IsString, IsUUID, Length } from 'class-validator';
-import { StaffPosition } from 'src/enums/staff.enums';
+import { StaffPosition } from 'src/utils/enums/staff.enums';
 
 @InputType()
 export class CreateStaffInput {

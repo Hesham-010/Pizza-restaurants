@@ -1,6 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsNumber, IsString } from 'class-validator';
-import { PizzaSize } from 'src/enums/pizza.enums';
+import { PizzaSize } from 'src/utils/enums/pizza.enums';
 
 @InputType()
 export class CreatePizzaInput {

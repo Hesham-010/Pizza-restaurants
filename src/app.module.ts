@@ -28,6 +28,7 @@ import { AdditionModule } from './addition/addition.module';
 import { InstructionModule } from './instruction/instruction.module';
 import { ConfigModule } from '@nestjs/config';
 import { ManagerModule } from './manager/manager.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { ManagerModule } from './manager/manager.module';
     AdditionModule,
     InstructionModule,
     ManagerModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [],

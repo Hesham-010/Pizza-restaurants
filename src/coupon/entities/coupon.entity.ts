@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { DiscountEnum } from 'src/enums/discount.enums';
+import { DiscountEnum } from 'src/utils/enums/discount.enums';
 import { Order } from 'src/order/entities/order.entity';
 
 @Entity()

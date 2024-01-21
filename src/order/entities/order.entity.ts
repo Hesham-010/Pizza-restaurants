@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { OrderStatus, ReceiveMethod } from 'src/enums/order.enums';
+import { OrderStatus, ReceiveMethod } from 'src/utils/enums/order.enums';
 import { Coupon } from 'src/coupon/entities/coupon.entity';
 import { Instruction } from 'src/instruction/entities/instraction.entity';
 import { Order_Items } from 'src/order/entities/order_items.entity';

@@ -9,11 +9,14 @@ import { Pizza } from 'src/pizza/entities/pizza.entity';
 import { Coupon } from 'src/coupon/entities/coupon.entity';
 import { Addition } from 'src/addition/entities/addition.entity';
 import { Order_Additions } from '../entities/order_additions.entity';
+import { NotificationService } from 'src/notification/services/notification.service';
+import { Customer } from 'src/customer/entities/customer.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(Addition) private additionRepo: Repository<Addition>,
+    @InjectRepository(Customer) private customernRepo: Repository<Customer>,
     @InjectRepository(Order) private orderRepo: Repository<Order>,
     @InjectRepository(Coupon) private couponRepo: Repository<Coupon>,
     @InjectRepository(Pizza) private pizzaRepo: Repository<Pizza>,
@@ -21,8 +24,8 @@ export class OrderService {
     private order_ItemsRepo: Repository<Order_Items>,
     @InjectRepository(Order_Additions)
     private order_AdditionsRepo: Repository<Order_Additions>,
+    private readonly notificationService: NotificationService,
   ) {}
-
   async createOrder(createOrderInput: CreateOrderInput) {
     // create new order
     const order = await this.orderRepo
@@ -47,6 +50,19 @@ export class OrderService {
 
     //count total price and discount amount
     await this.totalPrice(order, createOrderInput.couponCode);
+
+    // sent notification after create order
+    const customer = await this.customernRepo.findOne({
+      where: {
+        id: createOrderInput.customerId,
+      },
+    });
+
+    const notification = {
+      title: 'Create Order',
+      body: 'Order Created Successfully',
+    };
+    await this.notificationService.sendPushNotification(customer, notification);
 
     return order;
   }
@@ -245,16 +261,24 @@ export class OrderService {
       .leftJoinAndSelect('order.customer', 'customer')
       .where('order.id = :id', { id })
       .getOne();
+
+    if (!order) {
+      return new NotFoundException(`No order for this id ${id}`);
+    }
     return order;
   }
 
   async remove(id: string) {
-    await this.orderRepo
+    const order = await this.orderRepo
       .createQueryBuilder()
       .delete()
       .from(Order)
       .where('id = :id', { id })
       .execute();
+
+    if (!order.affected) {
+      return new NotFoundException(`No order for this id ${id}`);
+    }
     return 'Order Deleted';
   }
 }
