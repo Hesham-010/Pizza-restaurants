@@ -8,14 +8,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
-  app.use(
-    session({
-      secret: 'your secret string. you can also save it in .env file',
-      cookie: {},
-      resave: false,
-      saveUninitialized: false,
-    }),
-  );
 
   app.use(csurf());
 
