@@ -38,7 +38,7 @@ import { NotificationModule } from './notification/notification.module';
     }),
     GraphQLModule.forRoot({
       cors: {
-        origin: true,
+        origin: '*',
       },
       driver: ApolloDriver,
       autoSchemaFile: true,
