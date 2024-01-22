@@ -42,7 +42,7 @@ import { NotificationModule } from './notification/notification.module';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.DATABASE_URL,
+      // url: process.env.DATABASE_URL,
       host: process.env.DATABASE_HOST,
       port: Number(process.env.DATABASE_PORT),
       username: process.env.DATABASE_USERNAME,

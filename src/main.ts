@@ -5,7 +5,6 @@ import * as csurf from 'csurf';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(csurf());
-  app.enableCors();
   await app.listen(3000);
 }
 bootstrap();
