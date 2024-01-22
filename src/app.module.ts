@@ -40,6 +40,7 @@ import { NotificationModule } from './notification/notification.module';
       cors: {
         origin: true, // Allow all origins
         credentials: true, // allows sending cookies
+        allowedHeaders: ['Content-Type', 'Authorization'],
       },
       driver: ApolloDriver,
       autoSchemaFile: true,
