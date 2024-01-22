@@ -6,15 +6,16 @@ import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(cookieParser());
   app.use(
     session({
       secret: 'your-secret',
       resave: false,
       saveUninitialized: false,
+      cookie: { httpOnly: true },
     }),
   );
-  app.use(csurf());
+
+  app.use(csurf({ cookie: { httpOnly: true } }));
 
   await app.listen(3000);
 }
