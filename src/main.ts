@@ -6,22 +6,34 @@ import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(cookieParser());
-  app.use(
-    session({
-      secret: 'your-secret',
-      resave: false,
-      saveUninitialized: false,
-    }),
-  );
+  // app.use(cookieParser());
+  // app.use(
+  //   session({
+  //     secret: 'your-secret',
+  //     resave: false,
+  //     saveUninitialized: false,
+  //   }),
+  // );
 
-  app.use(
-    csurf({
-      cookie: {
-        httpOnly: true,
-      },
-    }),
-  );
+  // app.use(
+  //   csurf({
+  //     cookie: {
+  //       httpOnly: true,
+  //     },
+  //   }),
+  // );
+
+  app.use(cookieParser());
+  app.use(csurf({ cookie: { sameSite: true } }));
+
+  app.use((req: any, res: any, next: any) => {
+    const token = req.csrfToken();
+    res.cookie('XSRF-TOKEN', token);
+    res.locals.csrfToken = token;
+
+    next();
+  });
+
   await app.listen(3000);
 }
 bootstrap();
