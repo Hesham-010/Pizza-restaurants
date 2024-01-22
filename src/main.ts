@@ -5,7 +5,7 @@ import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   // app.use(cookieParser());
   // app.use(
   //   session({
@@ -24,15 +24,7 @@ async function bootstrap() {
   // );
 
   app.use(cookieParser());
-  app.use(csurf({ cookie: { sameSite: true } }));
-
-  app.use((req: any, res: any, next: any) => {
-    const token = req.csrfToken();
-    res.cookie('XSRF-TOKEN', token);
-    res.locals.csrfToken = token;
-
-    next();
-  });
+  app.use(csurf());
 
   await app.listen(3000);
 }
