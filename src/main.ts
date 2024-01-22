@@ -10,7 +10,8 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(
     session({
-      secret: 'your-secret',
+      secret: 'your secret string. you can also save it in .env file',
+      cookie: {},
       resave: false,
       saveUninitialized: false,
     }),
