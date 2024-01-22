@@ -36,7 +36,11 @@ import { NotificationModule } from './notification/notification.module';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRoot({
+      cors: {
+        origin: true, // Allow all origins
+        credentials: true, // allows sending cookies
+      },
       driver: ApolloDriver,
       autoSchemaFile: true,
     }),
