@@ -38,9 +38,7 @@ import { NotificationModule } from './notification/notification.module';
     }),
     GraphQLModule.forRoot({
       cors: {
-        origin: true, // Allow all origins
-        credentials: true, // allows sending cookies
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        origin: true,
       },
       driver: ApolloDriver,
       autoSchemaFile: true,
