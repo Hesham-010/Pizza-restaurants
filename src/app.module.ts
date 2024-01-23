@@ -33,14 +33,6 @@ import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
-    HttpModule.registerAsync({
-      useFactory: () => ({
-        baseURL: 'https://pizza-restaurants-chd5.onrender.com',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }),
-    }),
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
