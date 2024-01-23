@@ -5,7 +5,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.enableCors({ origin: 'https://pizza-restaurants-chd5.onrender.com' });
+  app.enableCors({ origin: '*' });
 
   await app.listen(3000);
 }
