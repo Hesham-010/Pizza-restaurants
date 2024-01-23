@@ -34,9 +34,8 @@ import { HttpModule } from '@nestjs/axios';
 @Module({
   imports: [
     HttpModule.registerAsync({
-      imports: [ConfigModule],
       useFactory: () => ({
-        baseURL: 'https://pizza-restaurants-chd5.onrender.com/graphql',
+        baseURL: 'https://pizza-restaurants-chd5.onrender.com',
         headers: {
           'Content-Type': 'application/json',
         },
