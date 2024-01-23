@@ -33,11 +33,20 @@ import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule.registerAsync({
+      useFactory: async () => ({
+        headers: {
+          'Content-Type': 'application/json',
+          'apollo-require-preflight': true,
+        },
+      }),
+    }),
+
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
     }),
-    GraphQLModule.forRoot({
+    GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
     }),
