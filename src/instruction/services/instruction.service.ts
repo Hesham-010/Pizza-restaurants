@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateInstructionInput } from '../dto/create-instruction.input';
 import { UpdateInstructionInput } from '../dto/update-instruction.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,19 +27,46 @@ export class InstructionService {
     return instruction;
   }
 
-  findAll() {
-    return `This action returns all instruction`;
+  async findByOrderId(orderId: string) {
+    const instractions = await this.instructionRepo.findBy({
+      order: { id: orderId },
+    });
+    if (!instractions) {
+      return new NotFoundException(
+        `No instractions for this order id ${orderId}`,
+      );
+    }
+    return instractions;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} instruction`;
+  async update(
+    orderId: string,
+    updateInstructionInput: UpdateInstructionInput,
+  ) {
+    const instraction = await this.instructionRepo.findOne({
+      where: { order: { id: orderId } },
+    });
+    if (!instraction) {
+      return new NotFoundException(
+        `There is no instraction for this id ${orderId}`,
+      );
+    }
+
+    instraction.instruction = updateInstructionInput.instruction;
+    await this.instructionRepo.save(instraction);
+
+    return instraction;
   }
 
-  update(id: number, updateInstructionInput: UpdateInstructionInput) {
-    return `This action updates a #${id} instruction`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} instruction`;
+  async remove(orderId: string) {
+    const instraction = await this.instructionRepo.delete({
+      order: { id: orderId },
+    });
+    if (!instraction.affected) {
+      return new NotFoundException(
+        `There is no instraction for this id ${orderId}`,
+      );
+    }
+    return 'Instractions Deleted';
   }
 }

@@ -31,7 +31,17 @@ export class AdditionService {
   async findOne(id: string) {
     const addition = await this.additionRepo.findOne({ where: { id } });
     if (!addition) {
-      return new NotFoundException('There is no addition for this id');
+      return new NotFoundException(`There is no addition for this id ${id}`);
+    }
+    return addition;
+  }
+
+  async findOneByAdditionTittle(title: string) {
+    const addition = await this.additionRepo.findOne({ where: { title } });
+    if (!addition) {
+      return new NotFoundException(
+        `There is no addition for this title ${title}`,
+      );
     }
     return addition;
   }
@@ -39,7 +49,7 @@ export class AdditionService {
   async update(id: string, updateAdditionInput: UpdateAdditionInput) {
     const addition = await this.additionRepo.findOne({ where: { id } });
     if (!addition) {
-      return new NotFoundException('There is no addition for this id');
+      return new NotFoundException(`There is no addition for this id ${id}`);
     }
     addition.title = updateAdditionInput.title;
     addition.price = updateAdditionInput.price;
@@ -52,7 +62,7 @@ export class AdditionService {
   async remove(id: string) {
     const addition = await this.additionRepo.findOne({ where: { id } });
     if (!addition) {
-      return new NotFoundException('There is no addition for this id');
+      return new NotFoundException(`There is no addition for this id ${id}`);
     }
     await this.additionRepo.delete(addition);
     return 'Addition Deleted';

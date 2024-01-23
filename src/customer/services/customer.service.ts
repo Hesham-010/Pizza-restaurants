@@ -62,7 +62,7 @@ export class CustomerService {
   async findAll() {
     const customers = await this.customerRepo
       .createQueryBuilder()
-      .select()
+      .select('*')
       .from(Customer, 'customer')
       .getMany();
     return customers;
@@ -82,11 +82,29 @@ export class CustomerService {
     return customer;
   }
 
-  async update(id: number, updateCustomerInput: UpdateCustomerInput) {
-    return `This action updates a #${id} customer`;
+  async update(id: string, updateCustomerInput: UpdateCustomerInput) {
+    const customer = await this.customerRepo.findOne({ where: { id } });
+    if (!customer) {
+      return new NotFoundException(`There is no customer for this id ${id}`);
+    }
+    const person = await this.personRepo.findOne({
+      where: { id: customer.person.id },
+    });
+
+    person.fristName = updateCustomerInput.fristName;
+    person.lastName = updateCustomerInput.lastName;
+    person.phone = updateCustomerInput.phone;
+    await this.customerRepo.save(person);
+
+    return customer;
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} customer`;
+  async remove(id: string) {
+    const customer = await this.customerRepo.findOne({ where: { id } });
+    if (!customer) {
+      return new NotFoundException(`There is no customer for this id ${id}`);
+    }
+    await this.customerRepo.delete(customer);
+    return 'Customer Deleted';
   }
 }

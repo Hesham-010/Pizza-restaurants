@@ -16,14 +16,9 @@ export class InstructionResolver {
     return this.instructionService.create(createInstructionInput);
   }
 
-  @Query(() => [Instruction], { name: 'instruction' })
-  findAll() {
-    return this.instructionService.findAll();
-  }
-
-  @Query(() => Instruction, { name: 'instruction' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.instructionService.findOne(id);
+  @Query(() => [Instruction])
+  findInstructionsByOrderId(@Args('orderId') orderId: string) {
+    return this.instructionService.findByOrderId(orderId);
   }
 
   @Mutation(() => Instruction)
@@ -32,13 +27,13 @@ export class InstructionResolver {
     updateInstructionInput: UpdateInstructionInput,
   ) {
     return this.instructionService.update(
-      updateInstructionInput.id,
+      updateInstructionInput.orderId,
       updateInstructionInput,
     );
   }
 
   @Mutation(() => Instruction)
-  removeInstruction(@Args('id', { type: () => Int }) id: number) {
-    return this.instructionService.remove(id);
+  removeInstruction(@Args('orderId') orderId: string) {
+    return this.instructionService.remove(orderId);
   }
 }

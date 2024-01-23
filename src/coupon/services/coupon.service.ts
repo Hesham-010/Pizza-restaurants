@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCouponInput } from '../dto/create-coupon.input';
 import { UpdateCouponInput } from '../dto/update-coupon.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,22 +20,42 @@ export class CouponService {
       .values({ ...createCouponInput })
       .execute()
       .then((coupon) => coupon.raw[0] as Coupon);
+
     return coupon;
   }
 
   async findAll() {
-    return `This action returns all coupon`;
+    const coupons = await this.couponRepo.find();
+    return coupons;
   }
 
   async findOne(id: string) {
-    return `This action returns a #${id} coupon`;
+    const coupon = await this.couponRepo.findOne({ where: { id } });
+    if (!coupon) {
+      return new NotFoundException(`There is no coupon for this id ${id}`);
+    }
+    return coupon;
   }
 
   async update(id: string, updateCouponInput: UpdateCouponInput) {
-    return `This action updates a #${id} coupon`;
+    const coupon = await this.couponRepo.findOne({ where: { id } });
+    if (!coupon) {
+      return new NotFoundException(`There is no coupon for this id ${id}`);
+    }
+
+    coupon.discount = updateCouponInput.discount;
+    coupon.expireDate = updateCouponInput.expireDate;
+    await this.couponRepo.save(coupon);
+
+    return coupon;
   }
 
   async remove(id: string) {
-    return `This action removes a #${id} coupon`;
+    const coupon = await this.couponRepo.findOne({ where: { id } });
+    if (!coupon) {
+      return new NotFoundException(`There is no coupon for this id ${id}`);
+    }
+    await this.couponRepo.delete(coupon);
+    return 'Coupon Deleted';
   }
 }
