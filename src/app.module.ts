@@ -29,7 +29,6 @@ import { InstructionModule } from './instruction/instruction.module';
 import { ConfigModule } from '@nestjs/config';
 import { ManagerModule } from './manager/manager.module';
 import { NotificationModule } from './notification/notification.module';
-import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [

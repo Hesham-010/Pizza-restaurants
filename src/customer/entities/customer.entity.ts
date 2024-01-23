@@ -19,6 +19,7 @@ export class Customer {
 
   @OneToOne(() => Person)
   @JoinColumn()
+  @Field()
   person: Person;
 
   @OneToMany(() => Address, (address) => address.customer)

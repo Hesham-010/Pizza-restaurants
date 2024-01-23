@@ -15,13 +15,13 @@ export class CustomerResolver {
     return this.customerService.create(createCustomerInput);
   }
 
-  @Query(() => [Customer], { name: 'customer' })
-  findAll() {
+  @Query(() => [Customer])
+  findAllCustomer() {
     return this.customerService.findAll();
   }
 
-  @Query(() => Customer, { name: 'customer' })
-  findOne(@Args('id') id: string) {
+  @Query(() => Customer)
+  findOneCustomer(@Args('id') id: string) {
     return this.customerService.findOne(id);
   }
 

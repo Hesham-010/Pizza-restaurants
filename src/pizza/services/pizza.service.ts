@@ -15,7 +15,9 @@ export class PizzaService {
       .insert()
       .into(Pizza)
       .values({ ...createPizzaInput })
-      .execute();
+      .returning('*')
+      .execute()
+      .then((pizza) => pizza.raw[0] as Pizza);
 
     return pizza;
   }
