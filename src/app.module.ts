@@ -39,9 +39,6 @@ import { NotificationModule } from './notification/notification.module';
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: true,
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded',
-      },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
