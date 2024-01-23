@@ -29,9 +29,19 @@ import { InstructionModule } from './instruction/instruction.module';
 import { ConfigModule } from '@nestjs/config';
 import { ManagerModule } from './manager/manager.module';
 import { NotificationModule } from './notification/notification.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: () => ({
+        baseURL: '/graphql',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+    }),
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,

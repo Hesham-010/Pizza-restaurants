@@ -7,12 +7,6 @@ async function bootstrap() {
     cors: true,
   });
 
-  app.use((req, res, next) => {
-    res.header('content-type', 'application/x-www-form-urlencoded');
-    res.header('apollo-require-preflight', 'true');
-    next();
-  });
-
   await app.listen(3000);
 }
 bootstrap();
