@@ -15,13 +15,13 @@ export class AdditionResolver {
     return this.additionService.create(createAdditionInput);
   }
 
-  @Query(() => [Addition], { name: 'addition' })
-  findAll() {
+  @Query(() => [Addition])
+  findAdditions() {
     return this.additionService.findAll();
   }
 
-  @Query(() => Addition, { name: 'addition' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => Addition)
+  findOneAddition(@Args('id') id: string) {
     return this.additionService.findOne(id);
   }
 
@@ -35,8 +35,8 @@ export class AdditionResolver {
     );
   }
 
-  @Mutation(() => Addition)
-  removeAddition(@Args('id', { type: () => Int }) id: number) {
+  @Mutation(() => String)
+  removeAddition(@Args('id') id: string) {
     return this.additionService.remove(id);
   }
 }

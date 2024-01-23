@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAdditionInput } from '../dto/create-addition.input';
 import { UpdateAdditionInput } from '../dto/update-addition.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,19 +23,38 @@ export class AdditionService {
     return addition;
   }
 
-  findAll() {
-    return `This action returns all addition`;
+  async findAll() {
+    const additions = await this.additionRepo.find();
+    return additions;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} addition`;
+  async findOne(id: string) {
+    const addition = await this.additionRepo.findOne({ where: { id } });
+    if (!addition) {
+      return new NotFoundException('There is no addition for this id');
+    }
+    return addition;
   }
 
-  update(id: number, updateAdditionInput: UpdateAdditionInput) {
-    return `This action updates a #${id} addition`;
+  async update(id: string, updateAdditionInput: UpdateAdditionInput) {
+    const addition = await this.additionRepo.findOne({ where: { id } });
+    if (!addition) {
+      return new NotFoundException('There is no addition for this id');
+    }
+    addition.title = updateAdditionInput.title;
+    addition.price = updateAdditionInput.price;
+    addition.isGlobal = updateAdditionInput.isGlobal;
+    await this.additionRepo.save(addition);
+
+    return addition;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} addition`;
+  async remove(id: string) {
+    const addition = await this.additionRepo.findOne({ where: { id } });
+    if (!addition) {
+      return new NotFoundException('There is no addition for this id');
+    }
+    await this.additionRepo.delete(addition);
+    return 'Addition Deleted';
   }
 }
