@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { PizzaService } from '../services/pizza.service';
 import { Pizza } from '../entities/pizza.entity';
 import { CreatePizzaInput } from '../dto/create-pizza.input';
@@ -8,19 +8,19 @@ import { UpdatePizzaInput } from '../dto/update-pizza.input';
 export class PizzaResolver {
   constructor(private readonly pizzaService: PizzaService) {}
 
-  @Mutation(() => Pizza)
-  createPizza(@Args('createPizzaInput') createPizzaInput: CreatePizzaInput) {
-    return this.pizzaService.create(createPizzaInput);
-  }
-
   @Query(() => [Pizza])
-  findAll() {
+  findAllPizzas() {
     return this.pizzaService.findAll();
   }
 
   @Query(() => Pizza)
-  findOne(@Args('id') id: string) {
+  findOnePizza(@Args('id') id: string) {
     return this.pizzaService.findOne(id);
+  }
+
+  @Mutation(() => Pizza)
+  createPizza(@Args('createPizzaInput') createPizzaInput: CreatePizzaInput) {
+    return this.pizzaService.create(createPizzaInput);
   }
 
   @Mutation(() => Pizza)

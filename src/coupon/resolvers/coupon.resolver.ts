@@ -16,12 +16,12 @@ export class CouponResolver {
   }
 
   @Query(() => [Coupon])
-  findAll() {
+  findAllCoupons() {
     return this.couponService.findAll();
   }
 
   @Query(() => Coupon)
-  findOne(@Args('id') id: string) {
+  findOneCoupon(@Args('id') id: string) {
     return this.couponService.findOne(id);
   }
 

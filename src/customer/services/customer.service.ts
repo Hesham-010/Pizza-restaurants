@@ -60,11 +60,7 @@ export class CustomerService {
   }
 
   async findAll() {
-    const customers = await this.customerRepo
-      .createQueryBuilder()
-      .select('*')
-      .from(Customer, 'customer')
-      .getMany();
+    const customers = await this.customerRepo.find({ relations: ['person'] });
     return customers;
   }
 

@@ -16,7 +16,7 @@ export class ManagerResolver {
   }
 
   @Query(() => [Manager])
-  findAll() {
+  findAllManagers() {
     return this.managerService.findAll();
   }
 
