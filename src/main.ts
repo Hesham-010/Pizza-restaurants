@@ -9,6 +9,8 @@ async function bootstrap() {
 
   app.use((req, res, next) => {
     res.header('content-type', 'application/json');
+    // res.header('x-apollo-operation-name', 'your-operation-name');
+    res.header('apollo-require-preflight', 'true');
     next();
   });
 
