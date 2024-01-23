@@ -18,7 +18,7 @@ export class PizzaResolver {
     return this.pizzaService.findAll();
   }
 
-  @Query(() => Pizza, { name: 'pizza' })
+  @Query(() => Pizza)
   findOne(@Args('id') id: string) {
     return this.pizzaService.findOne(id);
   }
@@ -29,7 +29,7 @@ export class PizzaResolver {
   }
 
   @Mutation(() => Pizza)
-  removePizza(@Args('id', { type: () => Int }) id: number) {
+  removePizza(@Args('id') id: string) {
     return this.pizzaService.remove(id);
   }
 }

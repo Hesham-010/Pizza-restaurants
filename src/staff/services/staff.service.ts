@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStaffInput } from '../dto/create-staff.input';
 import { UpdateStaffInput } from '../dto/update-staff.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -49,19 +49,46 @@ export class StaffService {
     return staff;
   }
 
-  findAll() {
-    return `This action returns all staff`;
+  async findAll() {
+    const staff = await this.staffRepo.find();
+    return staff;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} staff`;
+  async findByStoreId(storeId: string) {
+    const staff = await this.staffRepo.findBy({ store: { id: storeId } });
+    if (!staff) {
+      return new NotFoundException(
+        `There is no staff for this store id ${storeId}`,
+      );
+    }
+    return staff;
   }
 
-  update(id: string, updateStaffInput: UpdateStaffInput) {
-    return `This action updates a #${id} staff`;
+  async update(id: string, updateStaffInput: UpdateStaffInput) {
+    const staff = await this.staffRepo.findOne({
+      where: { id },
+      relations: ['person'],
+    });
+    if (!staff) {
+      return new NotFoundException(`There is no staff for this id ${id}`);
+    }
+
+    await this.personRepo.update(staff.person.id, {
+      fristName: updateStaffInput.fristName,
+      lastName: updateStaffInput.lastName,
+      phone: updateStaffInput.phone,
+    });
+    staff.position = updateStaffInput.position;
+    staff.staffState = updateStaffInput.staffState;
+    await this.staffRepo.save(staff);
+    return staff;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} staff`;
+  async remove(id: string) {
+    const staff = await this.staffRepo.delete(id);
+    if (!staff.affected) {
+      return new NotFoundException(`There is no staff for this id ${id}`);
+    }
+    return 'Staff Deleted';
   }
 }

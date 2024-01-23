@@ -52,11 +52,26 @@ export class StorService {
     return store;
   }
 
-  async update(id: number, updateStorInput: UpdateStorInput) {
-    return `This action updates a #${id} stor`;
+  async update(id: string, updateStorInput: UpdateStorInput) {
+    const store = await this.storeRepo.findOne({ where: { id } });
+    if (!store) {
+      return new NotFoundException(`There is no store for this id ${id}`);
+    }
+    store.city = updateStorInput.city;
+    store.street = updateStorInput.street;
+    store.closeTime = updateStorInput.closeTime;
+    store.openTime = updateStorInput.openTime;
+    store.title = updateStorInput.title;
+
+    await this.storeRepo.save(store);
+    return store;
   }
 
   async remove(id: string) {
-    return `This action removes a #${id} stor`;
+    const store = await this.storeRepo.delete(id);
+    if (!store.affected) {
+      return new NotFoundException(`Ther is no store for this id ${id}`);
+    }
+    return 'Store Deleted';
   }
 }

@@ -59,7 +59,7 @@ export class ManagerService {
       phone: updateManagerInput.phone,
     });
     await this.managerRepo.update(id, { email: updateManagerInput.email });
-    return `Manager Updated`;
+    return manager;
   }
 
   async remove(id: string) {

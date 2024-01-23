@@ -45,11 +45,25 @@ export class PizzaService {
     return pizza;
   }
 
-  async update(id: number, updatePizzaInput: UpdatePizzaInput) {
-    return `This action updates a #${id} pizza`;
+  async update(id: string, updatePizzaInput: UpdatePizzaInput) {
+    const pizza = await this.pizzaRepo.findOne({ where: { id } });
+    if (!pizza) {
+      return new NotFoundException(`There is no pizza for this id ${id}`);
+    }
+    pizza.price = updatePizzaInput.price;
+    pizza.size = updatePizzaInput.size;
+    pizza.taste = updatePizzaInput.taste;
+    pizza.title = updatePizzaInput.title;
+
+    await this.pizzaRepo.save(pizza);
+    return pizza;
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} pizza`;
+  async remove(id: string) {
+    const pizza = await this.pizzaRepo.delete(id);
+    if (!pizza.affected) {
+      return new NotFoundException(`There is no pizza for this id ${id}`);
+    }
+    return 'Pizza Deleted';
   }
 }

@@ -25,7 +25,7 @@ export class ManagerResolver {
     return this.managerService.findOne(id);
   }
 
-  @Mutation(() => String)
+  @Mutation(() => Manager)
   updateManager(
     @Args('updateManagerInput') updateManagerInput: UpdateManagerInput,
   ) {

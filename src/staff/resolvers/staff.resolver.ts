@@ -13,14 +13,14 @@ export class StaffResolver {
     return this.staffService.create(createStaffInput);
   }
 
-  @Query(() => [Staff], { name: 'staff' })
+  @Query(() => [Staff])
   findAll() {
     return this.staffService.findAll();
   }
 
-  @Query(() => Staff, { name: 'staff' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.staffService.findOne(id);
+  @Query(() => Staff)
+  findByStoreId(@Args('storeId') storeId: string) {
+    return this.staffService.findByStoreId(storeId);
   }
 
   @Mutation(() => Staff)
