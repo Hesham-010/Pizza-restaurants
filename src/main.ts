@@ -3,11 +3,8 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  app.enableCors({
-    origin: true,
-    methods: ['POST'],
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: { origin: 'https://pizza-restaurants-chd5.onrender.com/' },
   });
 
   await app.listen(3000);
