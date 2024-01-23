@@ -4,14 +4,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    cors: { origin: 'https://pizza-restaurants-chd5.onrender.com/' },
-  });
-
-  app.use((req, res, next) => {
-    res.header('content-type', 'application/json');
-    // res.header('x-apollo-operation-name', 'your-operation-name');
-    res.header('apollo-require-preflight', 'true');
-    next();
+    cors: {
+      origin: 'https://pizza-restaurants-chd5.onrender.com/',
+      allowedHeaders: ['content-type', 'apollo-require-preflight'],
+    },
   });
 
   await app.listen(3000);
