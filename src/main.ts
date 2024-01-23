@@ -7,6 +7,11 @@ async function bootstrap() {
     cors: { origin: 'https://pizza-restaurants-chd5.onrender.com/' },
   });
 
+  app.use((req, res, next) => {
+    res.header('content-type', 'application/json');
+    next();
+  });
+
   await app.listen(3000);
 }
 bootstrap();
