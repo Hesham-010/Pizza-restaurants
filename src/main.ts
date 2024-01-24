@@ -12,7 +12,6 @@ async function bootstrap() {
 
   app.use('/token', (req, res, next) => {
     res.render('index');
-    next();
   });
 
   await app.listen(3000);
