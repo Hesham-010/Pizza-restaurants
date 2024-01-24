@@ -7,8 +7,11 @@ async function bootstrap() {
 
   app.enableCors({ origin: '*' });
 
+  app.set('view engine', 'ejs');
+  app.set('views', 'views');
+
   app.use('/token', (req, res, next) => {
-    res.send('Welcome');
+    res.render('index');
     next();
   });
 

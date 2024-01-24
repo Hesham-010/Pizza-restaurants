@@ -1,0 +1,53 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Express with EJS</title>
+  </head>
+  <body>
+    <!-- Your HTML content -->
+    <h1>{{ message }}</h1>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+    <script type="module">
+      // Import functions using ESM syntax
+      import * as firebase from "https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js";
+      import "https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAPSeSPupmwgxUeQsz43cnQbwySlnBP8J0",
+        authDomain: "pizzaproject-e4bcf.firebaseapp.com",
+        projectId: "pizzaproject-e4bcf",
+        storageBucket: "pizzaproject-e4bcf.appspot.com",
+        messagingSenderId: "260795603597",
+        appId: "1:260795603597:web:aaaf03e49b7fc0c21f20c4",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const messag = firebase.messaging();
+
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then((registration) => {
+          messag.useServiceWorker(registration);
+        })
+        .catch((error) => {
+          console.error("Error registering service worker:", error);
+        });
+
+      // Request permission for notifications
+      messag
+        .requestPermission()
+        .then(() => messaging.getToken())
+        .then((token) => {
+          console.log("FCM Token:", token);
+        })
+        .catch((error) => {
+          console.error("Error obtaining FCM token:", error);
+        });
+    </script>
+  </body>
+</html>
