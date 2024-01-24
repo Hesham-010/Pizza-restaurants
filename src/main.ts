@@ -7,14 +7,6 @@ async function bootstrap() {
 
   app.enableCors({ origin: '*' });
 
-  app.set('view engine', 'ejs');
-  app.set('views', 'views');
-
-  app.use('/token', (req, res, next) => {
-    res.render('index');
-  });
-
   await app.listen(3000);
 }
 bootstrap();
-2;
