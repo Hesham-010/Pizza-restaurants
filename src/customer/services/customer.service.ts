@@ -65,13 +65,7 @@ export class CustomerService {
   }
 
   async findOne(id: string) {
-    const customer = await this.customerRepo
-      .createQueryBuilder()
-      .select()
-      .from(Customer, 'customer')
-      .where('customer.id = :id', { id })
-      .getOne();
-
+    const customer = await this.customerRepo.findOne({ where: { id } });
     if (!customer) {
       return new NotFoundException(`no customer for this id ${id}`);
     }

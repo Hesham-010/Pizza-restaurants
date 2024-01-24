@@ -7,6 +7,12 @@ async function bootstrap() {
 
   app.enableCors({ origin: '*' });
 
+  app.use('/token', (req, res, next) => {
+    return 'Welcome';
+    next();
+  });
+
   await app.listen(3000);
 }
 bootstrap();
+2;
