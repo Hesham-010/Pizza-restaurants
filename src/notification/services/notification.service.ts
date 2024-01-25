@@ -38,7 +38,7 @@ export class NotificationService {
       const notificationToken = this.notificationTokenRepo.create({
         customer,
         notification_token,
-        status: 'ACTIVE',
+        status: NotificationStatus.ACTIVE,
       });
 
       await this.notificationTokenRepo.save(notificationToken);
@@ -75,17 +75,18 @@ export class NotificationService {
         status: NotificationStatus.ACTIVE,
       },
     });
-    if (notification) {
-      await this.notificationRepo.save({
-        notification_token: notification,
-        title,
-        body,
-        status: NotificationStatus.ACTIVE,
-      });
-      await firebase.messaging().send({
-        notification: { title, body },
-        token: notification.notification_token,
-      });
+    if (!notification) {
+      return `this customer don't have fcm token`;
     }
+    await this.notificationRepo.save({
+      notification_token: notification,
+      title,
+      body,
+      status: NotificationStatus.ACTIVE,
+    });
+    await firebase.messaging().send({
+      notification: { title, body },
+      token: notification.notification_token,
+    });
   }
 }

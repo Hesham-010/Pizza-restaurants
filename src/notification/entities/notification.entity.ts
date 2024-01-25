@@ -21,7 +21,7 @@ export class Notification {
   title: string;
 
   @Column()
-  body: any;
+  body: string;
 
   @Column({
     type: 'enum',

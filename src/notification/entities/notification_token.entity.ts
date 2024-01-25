@@ -1,4 +1,5 @@
 import { Customer } from 'src/customer/entities/customer.entity';
+import { NotificationStatus } from 'src/utils/enums/notification_status.enum';
 import {
   Entity,
   Column,
@@ -7,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'notification_tokens' })
+@Entity()
 export class NotificationToken {
   @PrimaryGeneratedColumn()
   id: number;
@@ -20,7 +21,9 @@ export class NotificationToken {
   notification_token: string;
 
   @Column({
+    type: 'enum',
+    enum: NotificationStatus,
     default: 'ACTIVE',
   })
-  status: string;
+  status: NotificationStatus;
 }

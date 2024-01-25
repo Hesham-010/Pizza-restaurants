@@ -29,6 +29,8 @@ import { InstructionModule } from './instruction/instruction.module';
 import { ConfigModule } from '@nestjs/config';
 import { ManagerModule } from './manager/manager.module';
 import { NotificationModule } from './notification/notification.module';
+import { NotificationToken } from './notification/entities/notification_token.entity';
+import { Notification } from './notification/entities/notification.entity';
 
 @Module({
   imports: [
@@ -66,6 +68,8 @@ import { NotificationModule } from './notification/notification.module';
         Menu_items,
         Instruction,
         Order_Additions,
+        NotificationToken,
+        Notification,
       ],
       synchronize: true,
     }),
