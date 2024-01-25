@@ -89,4 +89,8 @@ export class NotificationService {
       token: notification.notification_token,
     });
   }
+
+  async findAll() {
+    return this.notificationRepo.find();
+  }
 }
