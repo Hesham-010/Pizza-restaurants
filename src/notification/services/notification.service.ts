@@ -69,24 +69,27 @@ export class NotificationService {
   ) {
     const { title, body } = notificationInput;
 
-    const notification = await this.notificationTokenRepo.findOne({
+    const notificationToken = await this.notificationTokenRepo.findOne({
       where: {
         customer: { id: customerId },
         status: NotificationStatus.ACTIVE,
       },
     });
-    if (!notification) {
+
+    if (!notificationToken) {
       return `this customer don't have fcm token`;
     }
+
     await this.notificationRepo.save({
-      notification_token: notification,
+      notification_token: notificationToken,
       title,
       body,
       status: NotificationStatus.ACTIVE,
     });
-    await firebase.messaging().send({
+
+    return await firebase.messaging().send({
       notification: { title, body },
-      token: notification.notification_token,
+      token: notificationToken.notification_token,
     });
   }
 

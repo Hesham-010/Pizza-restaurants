@@ -56,13 +56,6 @@ export class CustomerService {
       .execute();
 
     if (customer) {
-      // sent notification after create customer
-      const message = {
-        title: 'Create Customer',
-        body: 'Customer Created Successfully',
-      };
-      await this.notificationService.sendPushNotification(customer.id, message);
-
       return customer;
     }
 
@@ -83,10 +76,14 @@ export class CustomerService {
   }
 
   async update(id: string, updateCustomerInput: UpdateCustomerInput) {
-    const customer = await this.customerRepo.findOne({ where: { id } });
+    const customer = await this.customerRepo.findOne({
+      where: { id },
+      relations: ['person'],
+    });
     if (!customer) {
       return new NotFoundException(`There is no customer for this id ${id}`);
     }
+
     const person = await this.personRepo.findOne({
       where: { id: customer.person.id },
     });
@@ -94,8 +91,17 @@ export class CustomerService {
     person.fristName = updateCustomerInput.fristName;
     person.lastName = updateCustomerInput.lastName;
     person.phone = updateCustomerInput.phone;
-    await this.customerRepo.save(person);
+    await this.personRepo.save(person);
 
+    // sent notification after update customer
+    const message = {
+      title: 'Update Customer',
+      body: 'Update Created Successfully',
+    };
+    const n = await this.notificationService.sendPushNotification(
+      customer.id,
+      message,
+    );
     return customer;
   }
 

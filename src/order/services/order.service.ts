@@ -24,6 +24,7 @@ export class OrderService {
     private order_ItemsRepo: Repository<Order_Items>,
     @InjectRepository(Order_Additions)
     private order_AdditionsRepo: Repository<Order_Additions>,
+    private notificationService: NotificationService,
   ) {}
   async createOrder(createOrderInput: CreateOrderInput) {
     // create new order
@@ -39,7 +40,8 @@ export class OrderService {
         deliver: { id: createOrderInput.deliveryId },
       })
       .returning('*')
-      .execute();
+      .execute()
+      .then((order) => order.raw[0] as Order);
 
     // add order pizzas
     await this.orderPizzas(order, createOrderInput);
@@ -50,6 +52,16 @@ export class OrderService {
     //count total price and discount amount
     await this.totalPrice(order, createOrderInput.couponCode);
 
+    // sent notification after create order
+    const message = {
+      title: 'Create Order',
+      body: 'Create Order Successfully',
+    };
+    const n = await this.notificationService.sendPushNotification(
+      createOrderInput.customerId,
+      message,
+    );
+    console.log(n);
     return order;
   }
 
@@ -213,11 +225,10 @@ export class OrderService {
         return new NotFoundException('Invalid Coupon Code');
       }
       order.coupon = { id: coupon.id } as any;
+      discountAmount = (sum * coupon.discount) / 100;
     } else if (order.coupon) {
       coupon = order.coupon;
     }
-
-    discountAmount = (sum * coupon.discount) / 100;
 
     order.discountAmount = discountAmount;
 
