@@ -24,7 +24,6 @@ export class OrderService {
     private order_ItemsRepo: Repository<Order_Items>,
     @InjectRepository(Order_Additions)
     private order_AdditionsRepo: Repository<Order_Additions>,
-    private readonly notificationService: NotificationService,
   ) {}
   async createOrder(createOrderInput: CreateOrderInput) {
     // create new order
@@ -50,19 +49,6 @@ export class OrderService {
 
     //count total price and discount amount
     await this.totalPrice(order, createOrderInput.couponCode);
-
-    // sent notification after create order
-    const customer = await this.customernRepo.findOne({
-      where: {
-        id: createOrderInput.customerId,
-      },
-    });
-
-    const notification = {
-      title: 'Create Order',
-      body: 'Order Created Successfully',
-    };
-    await this.notificationService.sendPushNotification(customer, notification);
 
     return order;
   }

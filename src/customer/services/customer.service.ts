@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { Customer } from '../entities/customer.entity';
 import { Person } from 'src/models/person.entity';
 import { Address } from 'src/customer/entities/address.entity';
+import { NotificationService } from 'src/notification/services/notification.service';
 
 @Injectable()
 export class CustomerService {
@@ -17,6 +18,7 @@ export class CustomerService {
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
     @InjectRepository(Person) private personRepo: Repository<Person>,
     @InjectRepository(Address) private addressRepo: Repository<Address>,
+    private notificationService: NotificationService,
   ) {}
 
   async create(createCustomerInput: CreateCustomerInput) {
@@ -54,8 +56,16 @@ export class CustomerService {
       .execute();
 
     if (customer) {
+      // sent notification after create customer
+      const message = {
+        title: 'Create Customer',
+        body: 'Customer Created Successfully',
+      };
+      await this.notificationService.sendPushNotification(customer.id, message);
+
       return customer;
     }
+
     return BadRequestException;
   }
 
