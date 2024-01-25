@@ -10,13 +10,11 @@ import { Coupon } from 'src/coupon/entities/coupon.entity';
 import { Addition } from 'src/addition/entities/addition.entity';
 import { Order_Additions } from '../entities/order_additions.entity';
 import { NotificationService } from 'src/notification/services/notification.service';
-import { Customer } from 'src/customer/entities/customer.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(Addition) private additionRepo: Repository<Addition>,
-    @InjectRepository(Customer) private customernRepo: Repository<Customer>,
     @InjectRepository(Order) private orderRepo: Repository<Order>,
     @InjectRepository(Coupon) private couponRepo: Repository<Coupon>,
     @InjectRepository(Pizza) private pizzaRepo: Repository<Pizza>,

@@ -96,4 +96,19 @@ export class NotificationService {
   async findAll() {
     return this.notificationRepo.find();
   }
+
+  async seenOneNotification(id: string) {
+    const notification = await this.notificationRepo.update(id, {
+      seen: true,
+    });
+    if (notification.affected) return 'Success';
+  }
+
+  async seenNotifications() {
+    const notifications = await this.notificationRepo.update(
+      {},
+      { seen: true },
+    );
+    if (notifications.affected) return 'Success';
+  }
 }

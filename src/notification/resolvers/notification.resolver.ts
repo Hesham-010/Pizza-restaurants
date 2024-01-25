@@ -31,4 +31,14 @@ export class NotificationResolver {
   ) {
     return this.notificationService.disablePushNotification(customerId);
   }
+
+  @Mutation(() => String)
+  seenOneNotification(@Args('notificationId') notificationId: string) {
+    return this.notificationService.seenOneNotification(notificationId);
+  }
+
+  @Mutation(() => String)
+  seenNotifications() {
+    return this.notificationService.seenNotifications();
+  }
 }

@@ -36,4 +36,8 @@ export class Notification {
   })
   @Field()
   status: NotificationStatus;
+
+  @Column({ default: false })
+  @Field()
+  seen: boolean;
 }
