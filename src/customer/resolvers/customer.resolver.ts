@@ -35,7 +35,7 @@ export class CustomerResolver {
     );
   }
 
-  @Mutation(() => Customer)
+  @Mutation(() => String)
   removeCustomer(@Args('id') id: string) {
     return this.customerService.remove(id);
   }

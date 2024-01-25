@@ -17,6 +17,8 @@ export class Address {
   @Column()
   street: string;
 
-  @ManyToOne(() => Customer, (customer) => customer.address)
+  @ManyToOne(() => Customer, (customer) => customer.address, {
+    onDelete: 'CASCADE',
+  })
   customer: Customer;
 }
