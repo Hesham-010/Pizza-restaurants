@@ -24,11 +24,11 @@ export class NotificationService {
   ) {}
 
   async acceptPushNotification(
-    customer: any,
+    customerId: string,
     notification_token: string,
   ): Promise<NotificationToken> {
     const updateNotificationToken = await this.notificationTokenRepo.update(
-      { customer: { id: customer.id } },
+      { customer: { id: customerId } },
       {
         status: NotificationStatus.ACTIVE,
       },
@@ -36,7 +36,7 @@ export class NotificationService {
 
     if (!updateNotificationToken.affected) {
       const notificationToken = this.notificationTokenRepo.create({
-        customer,
+        customer: { id: customerId },
         notification_token,
         status: NotificationStatus.ACTIVE,
       });
@@ -49,10 +49,10 @@ export class NotificationService {
     return updateNotificationToken.raw;
   }
 
-  async disablePushNotification(customer: any) {
+  async disablePushNotification(customerId: string) {
     try {
       await this.notificationTokenRepo.update(
-        { customer: { id: customer.id } },
+        { customer: { id: customerId } },
         {
           status: NotificationStatus.INACTIVE,
         },
@@ -64,14 +64,14 @@ export class NotificationService {
   }
 
   async sendPushNotification(
-    customer: any,
+    customerId: any,
     notificationInput: NotificationInput,
   ) {
     const { title, body } = notificationInput;
 
     const notification = await this.notificationTokenRepo.findOne({
       where: {
-        customer: { id: customer.id },
+        customer: { id: customerId },
         status: NotificationStatus.ACTIVE,
       },
     });
