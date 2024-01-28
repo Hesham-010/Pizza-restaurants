@@ -62,6 +62,12 @@ export class Order {
   @Column()
   street: string;
 
+  @Field()
+  @Column({
+    default: false,
+  })
+  isPaid: boolean;
+
   @ManyToOne(() => Customer, (customer) => customer.order)
   customer: Customer;
 
