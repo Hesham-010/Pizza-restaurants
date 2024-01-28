@@ -330,5 +330,8 @@ export class OrderService {
     } catch (err) {
       return `Webhook Error: ${err.message}`;
     }
+    if (event.type === 'checkout.session.completed') {
+      console.log('Create Order');
+    }
   }
 }
