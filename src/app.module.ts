@@ -31,7 +31,6 @@ import { ManagerModule } from './manager/manager.module';
 import { NotificationModule } from './notification/notification.module';
 import { NotificationToken } from './notification/entities/notification_token.entity';
 import { Notification } from './notification/entities/notification.entity';
-import { CheckoutModule } from './checkout/checkout.module';
 
 @Module({
   imports: [
@@ -84,7 +83,6 @@ import { CheckoutModule } from './checkout/checkout.module';
     InstructionModule,
     ManagerModule,
     NotificationModule,
-    CheckoutModule,
   ],
   providers: [],
 })
