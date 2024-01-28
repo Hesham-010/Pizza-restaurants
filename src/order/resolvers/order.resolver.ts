@@ -32,4 +32,9 @@ export class OrderResolver {
   removeOrder(@Args('id') id: string) {
     return this.orderService.remove(id);
   }
+
+  @Mutation(() => String)
+  checkoutSession(@Args('orderId') orderId: string) {
+    return this.orderService.checkoutSession(orderId);
+  }
 }

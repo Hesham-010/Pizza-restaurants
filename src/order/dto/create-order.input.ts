@@ -19,8 +19,11 @@ export class CreateOrderInput {
   @Field({ nullable: true })
   couponCode: string;
 
-  @Field({ nullable: true })
+  @Field()
   orderStatus: OrderStatus;
+
+  @Field({ nullable: true })
+  isPaid: boolean;
 
   @Field()
   @IsUUID()

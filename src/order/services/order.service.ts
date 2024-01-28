@@ -10,10 +10,14 @@ import { Coupon } from 'src/coupon/entities/coupon.entity';
 import { Addition } from 'src/addition/entities/addition.entity';
 import { Order_Additions } from '../entities/order_additions.entity';
 import { NotificationService } from 'src/notification/services/notification.service';
+import { Customer } from 'src/customer/entities/customer.entity';
+// import { config } from 'dotenv';
+// config();
 
 @Injectable()
 export class OrderService {
   constructor(
+    @InjectRepository(Customer) private customerRepo: Repository<Customer>,
     @InjectRepository(Addition) private additionRepo: Repository<Addition>,
     @InjectRepository(Order) private orderRepo: Repository<Order>,
     @InjectRepository(Coupon) private couponRepo: Repository<Coupon>,
@@ -64,13 +68,15 @@ export class OrderService {
   }
 
   async update(id: string, updateOrderInput: UpdateOrderInput) {
-    const { city, street, orderStatus, recieveMethod } = updateOrderInput;
-    if (city || street || orderStatus) {
+    const { city, street, orderStatus, recieveMethod, isPaid } =
+      updateOrderInput;
+    if (city || street || orderStatus || isPaid) {
       const updateOrder = await this.orderRepo
         .createQueryBuilder('order')
         .update(Order)
         .set({
           city,
+          isPaid,
           street,
           orderStatus,
           recieveMethod,
@@ -78,7 +84,7 @@ export class OrderService {
         .where('id = :id', { id })
         .execute();
       if (!updateOrder.affected) {
-        return new NotFoundException('No order for this id 5');
+        return new NotFoundException('No order for this id');
       }
     }
 
@@ -275,5 +281,56 @@ export class OrderService {
       return new NotFoundException(`No order for this id ${id}`);
     }
     return 'Order Deleted';
+  }
+
+  async checkoutSession(orderId: string) {
+    const stripe = require('stripe')(process.env.STRIPE_SECRET);
+
+    const order = await this.orderRepo.findOne({
+      where: { id: orderId },
+      relations: ['customer'],
+    });
+
+    const customer = await this.customerRepo.findOne({
+      where: { id: order.customer.id },
+      relations: ['person'],
+    });
+
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price_data: {
+            currency: 'egp',
+            product_data: {
+              name: customer.person.fristName,
+            },
+            unit_amount: order.totalPrice * 100,
+          },
+          quantity: 1,
+        },
+      ],
+      client_reference_id: orderId,
+      mode: 'payment',
+      success_url: `http://localhost:3000/graphql`,
+      cancel_url: `http://localhost:3000/graphql`,
+    });
+    return session.url;
+  }
+
+  async webhook(req) {
+    const stripe = require('stripe')(process.env.STRIPE_SECRET);
+
+    const sig = req.headers['stripe-signature'];
+
+    let event;
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+      return `Webhook Error: ${err.message}`;
+    }
+    if (event.type === 'checkout.session.completed') {
+      console.log('Session Completed');
+    }
   }
 }
