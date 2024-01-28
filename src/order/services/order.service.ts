@@ -26,260 +26,261 @@ export class OrderService {
     private order_AdditionsRepo: Repository<Order_Additions>,
     private notificationService: NotificationService,
   ) {}
-  // async createOrder(createOrderInput: CreateOrderInput) {
-  //   // create new order
-  //   const order = await this.orderRepo
-  //     .createQueryBuilder()
-  //     .insert()
-  //     .into(Order)
-  //     .values({
-  //       ...createOrderInput,
-  //       customer: { id: createOrderInput.customerId },
-  //       store: { id: createOrderInput.storeId },
-  //       staff: { id: createOrderInput.staffId },
-  //       deliver: { id: createOrderInput.deliveryId },
-  //     })
-  //     .returning('*')
-  //     .execute()
-  //     .then((order) => order.raw[0] as Order);
 
-  //   // add order pizzas
-  //   await this.orderPizzas(order, createOrderInput);
+  async createOrder(createOrderInput: CreateOrderInput) {
+    // create new order
+    const order = await this.orderRepo
+      .createQueryBuilder()
+      .insert()
+      .into(Order)
+      .values({
+        ...createOrderInput,
+        customer: { id: createOrderInput.customerId },
+        store: { id: createOrderInput.storeId },
+        staff: { id: createOrderInput.staffId },
+        deliver: { id: createOrderInput.deliveryId },
+      })
+      .returning('*')
+      .execute()
+      .then((order) => order.raw[0] as Order);
 
-  //   // add order additions
-  //   await this.orderAdditions(order, createOrderInput);
+    // add order pizzas
+    await this.orderPizzas(order, createOrderInput);
 
-  //   //count total price and discount amount
-  //   await this.totalPrice(order, createOrderInput.couponCode);
+    // add order additions
+    await this.orderAdditions(order, createOrderInput);
 
-  //   // sent notification after create order
-  //   const message = {
-  //     title: 'Create Order',
-  //     body: 'Create Order Successfully',
-  //   };
-  //   const n = await this.notificationService.sendPushNotification(
-  //     createOrderInput.customerId,
-  //     message,
-  //   );
-  //   console.log(n);
-  //   return order;
-  // }
+    //count total price and discount amount
+    await this.totalPrice(order, createOrderInput.couponCode);
 
-  // async update(id: string, updateOrderInput: UpdateOrderInput) {
-  //   const { city, street, orderStatus, recieveMethod, isPaid } =
-  //     updateOrderInput;
-  //   if (city || street || orderStatus || isPaid) {
-  //     const updateOrder = await this.orderRepo
-  //       .createQueryBuilder('order')
-  //       .update(Order)
-  //       .set({
-  //         city,
-  //         isPaid,
-  //         street,
-  //         orderStatus,
-  //         recieveMethod,
-  //       })
-  //       .where('id = :id', { id })
-  //       .execute();
-  //     if (!updateOrder.affected) {
-  //       return new NotFoundException('No order for this id');
-  //     }
-  //   }
+    // sent notification after create order
+    const message = {
+      title: 'Create Order',
+      body: 'Create Order Successfully',
+    };
+    const n = await this.notificationService.sendPushNotification(
+      createOrderInput.customerId,
+      message,
+    );
+    console.log(n);
+    return order;
+  }
 
-  //   const order = await this.orderRepo
-  //     .createQueryBuilder('order')
-  //     .leftJoinAndSelect('order.coupon', 'coupon')
-  //     .where('order.id = :id', { id })
-  //     .getOne();
+  async update(id: string, updateOrderInput: UpdateOrderInput) {
+    const { city, street, orderStatus, recieveMethod, isPaid } =
+      updateOrderInput;
+    if (city || street || orderStatus || isPaid) {
+      const updateOrder = await this.orderRepo
+        .createQueryBuilder('order')
+        .update(Order)
+        .set({
+          city,
+          isPaid,
+          street,
+          orderStatus,
+          recieveMethod,
+        })
+        .where('id = :id', { id })
+        .execute();
+      if (!updateOrder.affected) {
+        return new NotFoundException('No order for this id');
+      }
+    }
 
-  //   if (!order) {
-  //     return new NotFoundException('No order for this id');
-  //   }
+    const order = await this.orderRepo
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.coupon', 'coupon')
+      .where('order.id = :id', { id })
+      .getOne();
 
-  //   if (updateOrderInput.pizzas) {
-  //     await this.order_ItemsRepo
-  //       .createQueryBuilder()
-  //       .delete()
-  //       .from(Order_Items)
-  //       .where('orderId = :id', { id })
-  //       .execute();
+    if (!order) {
+      return new NotFoundException('No order for this id');
+    }
 
-  //     await this.orderPizzas(order, updateOrderInput);
-  //   }
+    if (updateOrderInput.pizzas) {
+      await this.order_ItemsRepo
+        .createQueryBuilder()
+        .delete()
+        .from(Order_Items)
+        .where('orderId = :id', { id })
+        .execute();
 
-  //   if (updateOrderInput.additions) {
-  //     await this.order_AdditionsRepo
-  //       .createQueryBuilder()
-  //       .delete()
-  //       .from(Order_Additions)
-  //       .where('orderId = :id', { id })
-  //       .execute();
+      await this.orderPizzas(order, updateOrderInput);
+    }
 
-  //     await this.orderAdditions(order, updateOrderInput);
-  //   }
+    if (updateOrderInput.additions) {
+      await this.order_AdditionsRepo
+        .createQueryBuilder()
+        .delete()
+        .from(Order_Additions)
+        .where('orderId = :id', { id })
+        .execute();
 
-  //   await this.totalPrice(order, false);
+      await this.orderAdditions(order, updateOrderInput);
+    }
 
-  //   return order;
-  // }
+    await this.totalPrice(order, false);
 
-  // async orderPizzas(order, data) {
-  //   const pizzasIds = [];
-  //   const pizzasQuantity = [];
-  //   data.pizzas.map((item) => {
-  //     pizzasIds.push(item.pizzaId);
-  //     pizzasQuantity.push(item.quantity);
-  //   });
+    return order;
+  }
 
-  //   // get pizzas based on pizzasIds
-  //   const pizzas = await this.pizzaRepo
-  //     .createQueryBuilder('pizza')
-  //     .select()
-  //     .where('pizza.id IN (:...ids)', { ids: pizzasIds })
-  //     .getMany();
+  async orderPizzas(order, data) {
+    const pizzasIds = [];
+    const pizzasQuantity = [];
+    data.pizzas.map((item) => {
+      pizzasIds.push(item.pizzaId);
+      pizzasQuantity.push(item.quantity);
+    });
 
-  //   // create items on Order_Items entity
-  //   const items = [];
-  //   for (let i = 0; i < pizzas.length; i++) {
-  //     items.push({
-  //       order: order.id,
-  //       pizza: pizzas[i].id,
-  //       unitPrice: pizzas[i].price,
-  //       quantity: pizzasQuantity[i],
-  //     });
-  //   }
+    // get pizzas based on pizzasIds
+    const pizzas = await this.pizzaRepo
+      .createQueryBuilder('pizza')
+      .select()
+      .where('pizza.id IN (:...ids)', { ids: pizzasIds })
+      .getMany();
 
-  //   await this.order_ItemsRepo
-  //     .createQueryBuilder()
-  //     .insert()
-  //     .into(Order_Items)
-  //     .values(items)
-  //     .execute();
-  // }
+    // create items on Order_Items entity
+    const items = [];
+    for (let i = 0; i < pizzas.length; i++) {
+      items.push({
+        order: order.id,
+        pizza: pizzas[i].id,
+        unitPrice: pizzas[i].price,
+        quantity: pizzasQuantity[i],
+      });
+    }
 
-  // async orderAdditions(order, data) {
-  //   if (data.additions) {
-  //     const addittionsIds = [];
-  //     const addittionsQuantity = [];
-  //     data.additions.map((item) => {
-  //       addittionsIds.push(item.additionId);
-  //       addittionsQuantity.push(item.quantity);
-  //     });
+    await this.order_ItemsRepo
+      .createQueryBuilder()
+      .insert()
+      .into(Order_Items)
+      .values(items)
+      .execute();
+  }
 
-  //     // get additions based on pizzasIds
-  //     const additions = await this.additionRepo
-  //       .createQueryBuilder('addition')
-  //       .select()
-  //       .where('addition.id IN (:...ids)', { ids: addittionsIds })
-  //       .getMany();
+  async orderAdditions(order, data) {
+    if (data.additions) {
+      const addittionsIds = [];
+      const addittionsQuantity = [];
+      data.additions.map((item) => {
+        addittionsIds.push(item.additionId);
+        addittionsQuantity.push(item.quantity);
+      });
 
-  //     // create additions on Order_Additions entity
-  //     const items = [];
-  //     for (let i = 0; i < additions.length; i++) {
-  //       if (additions[i].isGlobal) {
-  //         items.push({
-  //           order: order.id,
-  //           addition: additions[i].id,
-  //           unitPrice: additions[i].price,
-  //           quantity: addittionsQuantity[i],
-  //         });
-  //       }
-  //     }
-  //     // create order additions in Order_Additions Entity
-  //     await this.order_AdditionsRepo
-  //       .createQueryBuilder()
-  //       .insert()
-  //       .into(Order_Additions)
-  //       .values(items)
-  //       .execute();
-  //   }
-  // }
+      // get additions based on pizzasIds
+      const additions = await this.additionRepo
+        .createQueryBuilder('addition')
+        .select()
+        .where('addition.id IN (:...ids)', { ids: addittionsIds })
+        .getMany();
 
-  // async totalPrice(order, couponCode) {
-  //   const { sumItem } = await this.order_ItemsRepo
-  //     .createQueryBuilder('order_item')
-  //     .select('SUM(order_item.unitPrice * order_item.quantity)', 'sumItem')
-  //     .where('order_item.orderId = :id', { id: order.id })
-  //     .getRawOne();
+      // create additions on Order_Additions entity
+      const items = [];
+      for (let i = 0; i < additions.length; i++) {
+        if (additions[i].isGlobal) {
+          items.push({
+            order: order.id,
+            addition: additions[i].id,
+            unitPrice: additions[i].price,
+            quantity: addittionsQuantity[i],
+          });
+        }
+      }
+      // create order additions in Order_Additions Entity
+      await this.order_AdditionsRepo
+        .createQueryBuilder()
+        .insert()
+        .into(Order_Additions)
+        .values(items)
+        .execute();
+    }
+  }
 
-  //   const { sumAddition } = await this.order_AdditionsRepo
-  //     .createQueryBuilder('order_addtion')
-  //     .select(
-  //       'SUM(order_addtion.unitPrice * order_addtion.quantity)',
-  //       'sumAddition',
-  //     )
-  //     .where('order_addtion.orderId = :id', { id: order.id })
-  //     .getRawOne();
+  async totalPrice(order, couponCode) {
+    const { sumItem } = await this.order_ItemsRepo
+      .createQueryBuilder('order_item')
+      .select('SUM(order_item.unitPrice * order_item.quantity)', 'sumItem')
+      .where('order_item.orderId = :id', { id: order.id })
+      .getRawOne();
 
-  //   const sum = Number(sumItem) + Number(sumAddition);
+    const { sumAddition } = await this.order_AdditionsRepo
+      .createQueryBuilder('order_addtion')
+      .select(
+        'SUM(order_addtion.unitPrice * order_addtion.quantity)',
+        'sumAddition',
+      )
+      .where('order_addtion.orderId = :id', { id: order.id })
+      .getRawOne();
 
-  //   // get coupon based on coupon code
-  //   let discountAmount = 0;
-  //   let coupon;
-  //   if (couponCode) {
-  //     coupon = await this.couponRepo
-  //       .createQueryBuilder('coupon')
-  //       .select()
-  //       .where('coupon.code = :code', { code: couponCode })
-  //       .getOne();
+    const sum = Number(sumItem) + Number(sumAddition);
 
-  //     if (!coupon && coupon.expireDate.toString() > Date.now().toString()) {
-  //       return new NotFoundException('Invalid Coupon Code');
-  //     }
-  //     order.coupon = { id: coupon.id } as any;
-  //     discountAmount = (sum * coupon.discount) / 100;
-  //   } else if (order.coupon) {
-  //     coupon = order.coupon;
-  //   }
+    // get coupon based on coupon code
+    let discountAmount = 0;
+    let coupon;
+    if (couponCode) {
+      coupon = await this.couponRepo
+        .createQueryBuilder('coupon')
+        .select()
+        .where('coupon.code = :code', { code: couponCode })
+        .getOne();
 
-  //   order.discountAmount = discountAmount;
+      if (!coupon && coupon.expireDate.toString() > Date.now().toString()) {
+        return new NotFoundException('Invalid Coupon Code');
+      }
+      order.coupon = { id: coupon.id } as any;
+      discountAmount = (sum * coupon.discount) / 100;
+    } else if (order.coupon) {
+      coupon = order.coupon;
+    }
 
-  //   const totalPrice = sum - discountAmount;
+    order.discountAmount = discountAmount;
 
-  //   order.totalPrice = totalPrice;
+    const totalPrice = sum - discountAmount;
 
-  //   await this.orderRepo.save(order);
-  // }
+    order.totalPrice = totalPrice;
 
-  // async findAll() {
-  //   const orders = await this.orderRepo
-  //     .createQueryBuilder()
-  //     .select('order')
-  //     .from(Order, 'order')
-  //     .getMany();
-  //   return orders;
-  // }
+    await this.orderRepo.save(order);
+  }
 
-  // async findOne(id: string) {
-  //   const order = await this.orderRepo
-  //     .createQueryBuilder('order')
-  //     .leftJoinAndSelect('order.coupon', 'coupon')
-  //     .leftJoinAndSelect('order.deliver', 'deliver')
-  //     .leftJoinAndSelect('order.staff', 'staff')
-  //     .leftJoinAndSelect('order.store', 'store')
-  //     .leftJoinAndSelect('order.customer', 'customer')
-  //     .where('order.id = :id', { id })
-  //     .getOne();
+  async findAll() {
+    const orders = await this.orderRepo
+      .createQueryBuilder()
+      .select('order')
+      .from(Order, 'order')
+      .getMany();
+    return orders;
+  }
 
-  //   if (!order) {
-  //     return new NotFoundException(`No order for this id ${id}`);
-  //   }
-  //   return order;
-  // }
+  async findOne(id: string) {
+    const order = await this.orderRepo
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.coupon', 'coupon')
+      .leftJoinAndSelect('order.deliver', 'deliver')
+      .leftJoinAndSelect('order.staff', 'staff')
+      .leftJoinAndSelect('order.store', 'store')
+      .leftJoinAndSelect('order.customer', 'customer')
+      .where('order.id = :id', { id })
+      .getOne();
 
-  // async remove(id: string) {
-  //   const order = await this.orderRepo
-  //     .createQueryBuilder()
-  //     .delete()
-  //     .from(Order)
-  //     .where('id = :id', { id })
-  //     .execute();
+    if (!order) {
+      return new NotFoundException(`No order for this id ${id}`);
+    }
+    return order;
+  }
 
-  //   if (!order.affected) {
-  //     return new NotFoundException(`No order for this id ${id}`);
-  //   }
-  //   return 'Order Deleted';
-  // }
+  async remove(id: string) {
+    const order = await this.orderRepo
+      .createQueryBuilder()
+      .delete()
+      .from(Order)
+      .where('id = :id', { id })
+      .execute();
+
+    if (!order.affected) {
+      return new NotFoundException(`No order for this id ${id}`);
+    }
+    return 'Order Deleted';
+  }
 
   // async checkoutSession(orderId: string) {
   //   const stripe = require('stripe')(process.env.STRIPE_SECRET);

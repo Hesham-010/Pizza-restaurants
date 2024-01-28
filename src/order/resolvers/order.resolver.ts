@@ -8,15 +8,15 @@ import { UpdateOrderInput } from '../dto/update-order.input';
 export class OrderResolver {
   constructor(private readonly orderService: OrderService) {}
 
-  // @Mutation(() => Order)
-  // createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {
-  //   return this.orderService.createOrder(createOrderInput);
-  // }
+  @Mutation(() => Order)
+  createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {
+    return this.orderService.createOrder(createOrderInput);
+  }
 
-  // @Query(() => [Order])
-  // findAllOrders() {
-  //   return this.orderService.findAll();
-  // }
+  @Query(() => [Order])
+  findAllOrders() {
+    return this.orderService.findAll();
+  }
 
   // @Query(() => Order)
   // findOrder(@Args('id') id: string) {
