@@ -10,7 +10,6 @@ import { Order_Additions } from './entities/order_additions.entity';
 import { Addition } from 'src/addition/entities/addition.entity';
 import { NotificationModule } from 'src/notification/notification.module';
 import { Customer } from 'src/customer/entities/customer.entity';
-import { WebhookController } from './controllers/webhook.controller';
 
 @Module({
   imports: [
@@ -25,7 +24,6 @@ import { WebhookController } from './controllers/webhook.controller';
     ]),
     NotificationModule,
   ],
-  controllers: [WebhookController],
   providers: [OrderResolver, OrderService],
 })
 export class OrderModule {}

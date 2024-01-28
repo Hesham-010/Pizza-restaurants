@@ -11,8 +11,6 @@ import { Addition } from 'src/addition/entities/addition.entity';
 import { Order_Additions } from '../entities/order_additions.entity';
 import { NotificationService } from 'src/notification/services/notification.service';
 import { Customer } from 'src/customer/entities/customer.entity';
-// import { config } from 'dotenv';
-// config();
 
 @Injectable()
 export class OrderService {
@@ -315,23 +313,5 @@ export class OrderService {
       cancel_url: `http://localhost:3000/graphql`,
     });
     return session.url;
-  }
-
-  async webhook(body, sig) {
-    const stripe = require('stripe')(process.env.STRIPE_SECRET);
-
-    let event;
-    try {
-      event = stripe.webhooks.constructEvent(
-        body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET,
-      );
-    } catch (err) {
-      return `Webhook Error: ${err.message}`;
-    }
-    if (event.type === 'checkout.session.completed') {
-      console.log('Create Order');
-    }
   }
 }
