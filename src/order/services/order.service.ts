@@ -322,7 +322,7 @@ export class OrderService {
 
     let event;
     try {
-      event = event = stripe.webhooks.constructEvent(
+      event = stripe.webhooks.constructEvent(
         body,
         sig,
         process.env.STRIPE_WEBHOOK_SECRET,
