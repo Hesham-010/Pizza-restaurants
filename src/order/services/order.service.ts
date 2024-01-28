@@ -317,20 +317,18 @@ export class OrderService {
     return session.url;
   }
 
-  async webhook(req) {
+  async webhook(body, sig) {
     const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
-    const sig = req.headers['stripe-signature'];
-
     let event;
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+      event = event = stripe.webhooks.constructEvent(
+        body,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET,
+      );
     } catch (err) {
       return `Webhook Error: ${err.message}`;
-    }
-    if (event.type === 'checkout.session.completed') {
-      console.log('Session Completed');
     }
   }
 }
